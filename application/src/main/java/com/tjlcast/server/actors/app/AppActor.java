@@ -1,6 +1,5 @@
 package com.tjlcast.server.actors.app;
 
-
 import akka.actor.ActorRef;
 import akka.actor.SupervisorStrategy.Directive;
 import akka.actor.OneForOneStrategy;
@@ -10,6 +9,7 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import akka.japi.Function;
 import com.tjlcast.common.message.device.DeviceRecognitionMsg;
+import com.tjlcast.common.message.device.ToDeviceActorNotificationMsg;
 import com.tjlcast.server.actors.ActorSystemContext;
 import com.tjlcast.server.actors.service.ActorService;
 import com.tjlcast.server.actors.service.ContextAwareActor;
@@ -64,7 +64,8 @@ public class AppActor extends ContextAwareActor {
             } catch (Exception e) {
                 logger.error(e.toString()) ;
             }
-
+        } else if (message instanceof ToDeviceActorNotificationMsg) {
+            onToDeviceActorMsg((ToDeviceActorNotificationMsg) message);
         } else if (message instanceof DeviceRecognitionMsg) {
             getOrCreateTenantActor(((DeviceRecognitionMsg) message).getTenantId()).tell(message,ActorRef.noSender());
         }
@@ -106,4 +107,8 @@ public class AppActor extends ContextAwareActor {
                     }
                 }
             }) ;
+
+    private void onToDeviceActorMsg(ToDeviceActorNotificationMsg msg) {
+        getOrCreateTenantActor(msg.getTenantId()).tell(msg, ActorRef.noSender());
+    }
 }

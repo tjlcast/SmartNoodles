@@ -1,15 +1,16 @@
 package com.tjlcast.server.actors.device;
 
 import akka.event.LoggingAdapter;
+import com.google.gson.JsonObject;
+import com.tjlcast.common.data.DeviceShadow;
 import com.tjlcast.common.message.device.DeviceRecognitionMsg;
+import com.tjlcast.common.message.device.DeviceShadowMsg;
 import com.tjlcast.server.actors.ActorSystemContext;
 import com.tjlcast.server.actors.shared.AbstractContextAwareMsgProcessor;
 
 import scala.concurrent.duration.Duration;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -21,6 +22,8 @@ public class DeviceActorMessageProcessor extends AbstractContextAwareMsgProcesso
     private final Map<UUID, UUID> sessions;
     private final Map<UUID, UUID> attributeSubscriptions;
     private final Map<UUID, UUID> rpcSubscriptions;
+
+    private DeviceShadow deviceShadow;
 
     public DeviceActorMessageProcessor(ActorSystemContext systemContext, LoggingAdapter logger, UUID deviceId) {
         super(systemContext, logger);
@@ -84,5 +87,29 @@ public class DeviceActorMessageProcessor extends AbstractContextAwareMsgProcesso
 //            deviceShadow.addProperty("deviceId",device.getId().toString());
 //            //TODO send to service midware
 //        }
+    }
+
+    public void processDeviceShadowMsg(DeviceShadowMsg msg){
+        //TODO  deiceactor中处理数据http请求
+        JsonObject payLoad = msg.getPayLoad();
+        String methodName = payLoad.get("methodName").getAsString();
+        if(methodName==null){
+            msg.setResult("methodName is null");
+        }else if(methodName.equals("get")){
+            msg.setResult(deviceShadow.getPayload().toString());
+        }else if(methodName.equals("updateAttribute")){
+            JsonObject attribute = payLoad.get("attribute").getAsJsonObject();
+            String attributeName = attribute.get("attributeName").getAsString();
+            String attributeValue = attribute.get("attributeValue").getAsString();
+//            KvEntry entry = new StringDataEntry(attributeName,attributeValue);
+//            AttributeKvEntry attr = new BaseAttributeKvEntry(entry,System.currentTimeMillis());
+//            List<AttributeKvEntry> ls = new ArrayList<AttributeKvEntry>();
+//            ls.add(attr);
+//            systemContext.getAttributesService().save(msg.getDeviceId(),"SERVER_SCOPE",ls);
+            deviceShadow.updateAttribute(attribute.get("attributeName").getAsString(),attribute);
+            msg.setResult(deviceShadow.getPayload().toString());
+        }else{
+            msg.setResult("Unrecognized methodName");
+        }
     }
 }

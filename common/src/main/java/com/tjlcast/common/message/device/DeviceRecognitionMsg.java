@@ -1,8 +1,11 @@
 package com.tjlcast.common.message.device;
 
 import com.tjlcast.common.data.Device;
+import com.tjlcast.common.message.aware.DeviceAwareMsg;
+import com.tjlcast.common.message.aware.TenantAwareMsg;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 /**
@@ -10,7 +13,7 @@ import java.util.UUID;
  */
 
 @ToString
-public class DeviceRecognitionMsg implements ToDeviceActorNotificationMsg{
+public class DeviceRecognitionMsg implements TenantAwareMsg, DeviceAwareMsg, Serializable{
 
     private final String manufacture;
     private final String deviceType;

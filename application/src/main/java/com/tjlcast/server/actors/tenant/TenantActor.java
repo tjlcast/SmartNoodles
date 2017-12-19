@@ -6,6 +6,7 @@ import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.tjlcast.common.message.device.DeviceRecognitionMsg;
+import com.tjlcast.common.message.device.ToDeviceActorNotificationMsg;
 import com.tjlcast.server.actors.ActorSystemContext;
 import com.tjlcast.server.actors.device.DeviceActor;
 import com.tjlcast.server.actors.service.ContextAwareActor;
@@ -37,7 +38,9 @@ public class TenantActor extends ContextAwareActor {
 
     @Override
     public void onReceive(Object message) throws Exception {
-        if(message instanceof DeviceRecognitionMsg){
+        if (message instanceof ToDeviceActorNotificationMsg) {
+            onToDeviceActorMsg((ToDeviceActorNotificationMsg) message);
+        } else if(message instanceof DeviceRecognitionMsg){
             getOrCreateDeviceActor(((DeviceRecognitionMsg) message).getDeviceId()).tell(message,ActorRef.noSender());
         }
     }
@@ -64,5 +67,9 @@ public class TenantActor extends ContextAwareActor {
         public TenantActor create() throws  Exception {
             return new TenantActor(context, tenantId) ;
         }
+    }
+
+    private void onToDeviceActorMsg(ToDeviceActorNotificationMsg msg) {
+        getOrCreateDeviceActor(msg.getDeviceId()).tell(msg, ActorRef.noSender());
     }
 }

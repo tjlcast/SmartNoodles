@@ -3,6 +3,8 @@ package com.tjlcast.server.actors.device;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.tjlcast.common.message.device.DeviceRecognitionMsg;
+import com.tjlcast.common.message.device.DeviceShadowMsg;
+import com.tjlcast.common.message.device.ToDeviceActorNotificationMsg;
 import com.tjlcast.server.actors.ActorSystemContext;
 import com.tjlcast.server.actors.service.ContextAwareActor;
 import com.tjlcast.server.actors.service.ContextBasedCreator;
@@ -31,6 +33,20 @@ public class DeviceActor extends ContextAwareActor {
     public void onReceive(Object message) throws Exception {
         if(message instanceof DeviceRecognitionMsg){
             processor.process((DeviceRecognitionMsg)message);
+        } else if (message instanceof ToDeviceActorNotificationMsg) {
+//            if (msg instanceof DeviceAttributesEventNotificationMsg) {
+//                processor.processAttributesUpdate(context(), (DeviceAttributesEventNotificationMsg) msg);
+//            } else if (msg instanceof ToDeviceRpcRequestPluginMsg) {
+//                processor.processRpcRequest(context(), (ToDeviceRpcRequestPluginMsg) msg);
+//            } else if (msg instanceof DeviceCredentialsUpdateNotificationMsg){
+//                processor.processCredentialsUpdate();
+//            } else if (msg instanceof DeviceNameOrTypeUpdateMsg){
+//                processor.processNameOrTypeUpdate((DeviceNameOrTypeUpdateMsg) msg);
+//                //TODO modified by cc
+//            }
+            if(message instanceof DeviceShadowMsg){
+                processor.processDeviceShadowMsg((DeviceShadowMsg)message);
+            }
         }
     }
 

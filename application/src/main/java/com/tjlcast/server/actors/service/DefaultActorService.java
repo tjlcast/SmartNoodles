@@ -6,6 +6,7 @@ import akka.actor.Props;
 import akka.actor.Terminated;
 import com.tjlcast.common.message.aware.SessionAwareMsg;
 import com.tjlcast.common.message.device.DeviceRecognitionMsg;
+import com.tjlcast.common.message.device.ToDeviceActorNotificationMsg;
 import com.tjlcast.server.actors.ActorSystemContext;
 import com.tjlcast.server.actors.app.AppActor;
 import com.tjlcast.server.actors.session.SessionManagerActor;
@@ -90,5 +91,11 @@ public class DefaultActorService implements ActorService {
         log.debug("Processing session aware msg: {}", msg);
         // todo
         // sessionManagerActor.tell(msg, ActorRef.noSender());
+    }
+
+    @Override
+    public void onMsg(ToDeviceActorNotificationMsg msg) {
+        log.trace("Processing notification rpc msg: {}", msg);
+        appActor.tell(msg, ActorRef.noSender());
     }
 }
