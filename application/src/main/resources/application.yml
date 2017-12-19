@@ -1,0 +1,23 @@
+server:
+    port: 8080
+
+spring:
+  application:
+    name: SmartNoodles
+  profiles:
+    active: prod
+
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/dbgirl_test?useUnicode=true&characterEncoding=utf8&characterSetResults=utf8
+    username: root
+    password: destination
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+
+accsess:
+  bind_address: localhost
+  bind_port: 8989
