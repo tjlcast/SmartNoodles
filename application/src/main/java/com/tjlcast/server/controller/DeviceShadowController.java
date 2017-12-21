@@ -1,5 +1,7 @@
 package com.tjlcast.server.controller;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tjlcast.common.data.Device;
 import com.tjlcast.common.data.DeviceService;
@@ -25,13 +27,15 @@ public class DeviceShadowController {
     @Autowired
     protected ActorService actorService;
 
-    @RequestMapping(value = "/{deviceId}", method = RequestMethod.POST)
-    public DeferredResult<String> shadow(@RequestBody String json, @PathVariable String deviceId){
+    @RequestMapping(value = "/testDevice", method = RequestMethod.POST)
+    public DeferredResult<String> shadow(@RequestBody String jsonStr){
         DeferredResult<String> result = new DeferredResult<>();
-        JsonParser parser = new JsonParser();
 
-        Device device = new Device();
-        DeviceShadowMsg msg = new DeviceShadowMsg(device,parser.parse(json).getAsJsonObject(),result);
+        JsonParser parser = new JsonParser();
+        JsonObject json = parser.parse(jsonStr).getAsJsonObject();
+        Device device = Device.getDeviceRandom();
+
+        DeviceShadowMsg msg = new DeviceShadowMsg(device, json,result);
 
         actorService.onMsg(msg);
         return result;

@@ -8,8 +8,10 @@ import com.tjlcast.common.message.device.DeviceShadowMsg;
 import com.tjlcast.server.actors.ActorSystemContext;
 import com.tjlcast.server.actors.shared.AbstractContextAwareMsgProcessor;
 
+import com.tjlcast.server.utils.http.demo.OkHttpUtil;
 import scala.concurrent.duration.Duration;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -75,9 +77,8 @@ public class DeviceActorMessageProcessor extends AbstractContextAwareMsgProcesso
 //        }
 //    }
 
-    // todo 编写处理方法
-
     public void process(DeviceRecognitionMsg msg){
+
 //        Device device = systemContext.getDeviceService().findDeviceById(deviceId);
 //        String manufacture = msg.getManufacture();
 //        String deviceType = msg.getDeviceType();
@@ -92,9 +93,22 @@ public class DeviceActorMessageProcessor extends AbstractContextAwareMsgProcesso
     public void processDeviceShadowMsg(DeviceShadowMsg msg){
         //TODO  deiceactor中处理数据http请求
         JsonObject payLoad = msg.getPayLoad();
-        String methodName = payLoad.get("methodName").getAsString();
+        String methodName = null ;
         if(methodName==null){
-            msg.setResult("methodName is null");
+            // to www.baidu.com
+            String response = "bad response" ;
+            try {
+                // first try
+                response = OkHttpUtil.getStringFromServer("http://www.baidu.com");
+            } catch (IOException e) {
+                // second try
+                try {
+                    response = OkHttpUtil.getStringFromServer("http://www.baidu.com");
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            msg.setResult(response);
         }else if(methodName.equals("get")){
             msg.setResult(deviceShadow.getPayload().toString());
         }else if(methodName.equals("updateAttribute")){
