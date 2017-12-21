@@ -43,7 +43,7 @@ public class AppActor extends ContextAwareActor {
 
     @Override
     public SupervisorStrategy supervisorStrategy() {
-        return super.supervisorStrategy();
+        return strategy;
     }
 
     @Override
