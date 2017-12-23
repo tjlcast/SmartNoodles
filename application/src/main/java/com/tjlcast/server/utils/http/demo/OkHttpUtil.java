@@ -3,7 +3,10 @@ package com.tjlcast.server.utils.http.demo;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import static com.tjlcast.server.utils.http.demo.HttpPostJSONClientExample.JSON;
 
 /**
  * Created by tangjialiang on 2017/12/11.
@@ -56,6 +59,34 @@ public class OkHttpUtil {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
+        Response response = execute(request);
+        if (response.isSuccessful()) {
+            String string = response.body().string();
+            return string ;
+        } else {
+            throw new IOException("Unexpected code " + response) ;
+        }
+    }
+
+    public static String getStringFromServer(String url, Map<String, String> headers, String fileStr) throws IOException {
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .build();
+
+        Request.Builder requestBuilders = new Request.Builder()
+                .url(url);
+        for(Map.Entry<String, String> item : headers.entrySet()) {
+            requestBuilders = requestBuilders.header(item.getKey(), item.getValue());
+        }
+
+        if (fileStr == null) {
+            requestBuilders = requestBuilders.get();
+        } else {
+            RequestBody body = RequestBody.create(JSON, fileStr);
+            requestBuilders = requestBuilders.post(body);
+        }
+        Request request = requestBuilders.build();
+
         Response response = execute(request);
         if (response.isSuccessful()) {
             String string = response.body().string();

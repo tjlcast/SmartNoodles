@@ -67,5 +67,10 @@
             <groupId>com.tjlcast</groupId>
             <artifactId>common</artifactId>
         </dependency>
+		<dependency>
+			<groupId>com.tjlcast</groupId>
+			<artifactId>application</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
