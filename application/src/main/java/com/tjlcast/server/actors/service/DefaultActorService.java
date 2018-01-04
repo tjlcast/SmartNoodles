@@ -35,7 +35,7 @@ import javax.annotation.PreDestroy;
 @Slf4j
 public class DefaultActorService implements ActorService {
 
-    private static final String ACTOR_SYSTEM_NAME = "Akka" ;
+    private static final String ACTOR_SYSTEM_NAME = "akka" ; // default is Akka
 
     public static final String APP_DISPATCHER_NAME = "app-dispatcher";
     public static final String CORE_DISPATCHER_NAME = "core-dispatcher";
